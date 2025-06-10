@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('drop_off_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('collection_run_id')->constrained('collection_runs')->onDelete('cascade'); // Foreign key to schedules
-            $table->foreignId('drop_off_location_id')->constrained('drop_off_locations')->onDelete('cascade'); // Foreign key to drop_off_locations
-            $table->float('weight'); // Weight of the items dropped off in kg
-            $table->timestamp('drop_off_time')->default(now()); // Timestamp of the drop-off
-            $table->text('notes')->nullable(); // Optional comments about the drop-off
+            $table->foreignId('collection_run_id')->constrained('collection_runs')->onDelete('cascade');
+            $table->foreignId('drop_off_location_id')->constrained('drop_off_locations')->onDelete('cascade');
+            $table->float('weight');
+            $table->timestamp('drop_off_time')->default(now());
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

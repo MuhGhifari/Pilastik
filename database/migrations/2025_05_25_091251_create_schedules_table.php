@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('collector_id')->constrained('users')->onDelete('cascade'); // Foreign key to users table
-            $table->foreignId('trash_bin_id')->constrained('trash_bins')->onDelete('cascade'); // Foreign key to trash_bins table
-            $table->timestamp('scheduled_time'); // Scheduled time for the collection
+            $table->foreignId('collector_id')->constrained('users')->onDelete('cascade'); 
+            $table->foreignId('trash_bin_id')->constrained('trash_bins')->onDelete('cascade'); 
+            $table->time('scheduled_time'); 
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); 
+            $table->foreignId('updated_by')->constrained('users')->onDelete('cascade')->nullable(); 
             $table->timestamps();
         });
     }

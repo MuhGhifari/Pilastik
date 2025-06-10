@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('trash_bins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('resident_id')->constrained('users')->onDelete('cascade');
-            $table->string('bin_type'); // 'organic', 'non_organic'
-            $table->string('status')->default('available'); // 'available', 'in_use', 'full'
+            $table->string('bin_type'); 
+            $table->string('status')->default('available'); 
             $table->float('latitude');
             $table->float('longitude');
-            $table->float('capacity')->default(0); // in kg
+            $table->float('capacity')->default(0); 
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pickup_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('collection_run_id')->constrained('schedules')->onDelete('cascade');
+            $table->foreignId('collection_run_id')->constrained('collection_runs')->onDelete('cascade');
             $table->foreignId('trash_bin_id')->constrained()->onDelete('cascade');
             $table->timestamp('pickup_time')->default(now());
             $table->timestamps();

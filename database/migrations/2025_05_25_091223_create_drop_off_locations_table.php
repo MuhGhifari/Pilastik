@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('drop_off_locations', function (Blueprint $table) {
             $table->id();
-            $table->string('location_id')->unique(); // Unique identifier for the drop-off location
-            $table->string('name'); // Name of the drop-off location
-            $table->string('address'); // Address of the drop-off location
-            $table->float('latitude'); // Latitude coordinate
-            $table->float('longitude'); // Longitude coordinate
-            $table->string('status')->default('active'); // Status of the location, e.g., 'active', 'inactive'
-            $table->text('description')->nullable(); // Optional description of the location
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // User who created the location
-            $table->foreignId('updated_by')->constrained('users')->onDelete('cascade'); // User who last updated the location
+            $table->string('location_id')->unique();
+            $table->string('name');
+            $table->string('address');
+            $table->float('latitude');
+            $table->float('longitude');
+            $table->string('status')->default('active');
+            $table->text('description')->nullable();
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

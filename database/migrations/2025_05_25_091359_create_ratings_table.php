@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pickup_log_id')->constrained('pickup_logs')->onDelete('cascade'); // Foreign key to pickup_logs
-            $table->unsignedTinyInteger('score'); // Rating value from 1 to 5
-            $table->text('comments')->nullable(); // Optional comments about the rating
+            $table->foreignId('pickup_log_id')->constrained('pickup_logs')->onDelete('cascade');
+            $table->unsignedTinyInteger('score');
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }
