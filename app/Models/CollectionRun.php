@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\DropOffLog;
 
 class CollectionRun extends Model
 {
@@ -34,5 +37,9 @@ class CollectionRun extends Model
     public function collector()
     {
         return $this->belongsTo(User::class, 'collector_id');
+    }
+
+    public function dropOffLogs() {
+        return $this->hasMany(DropOffLog::class, 'collection_run_id');
     }
 }

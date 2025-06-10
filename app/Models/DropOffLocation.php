@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DropOffLog;
+use App\Models\User;
 
 class DropOffLocation extends Model
 {
@@ -31,5 +33,13 @@ class DropOffLocation extends Model
     public function dropOffLogs()
     {
         return $this->hasMany(DropOffLog::class, 'location_id');
+    }
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy() {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

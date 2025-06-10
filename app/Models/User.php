@@ -6,10 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Schedule;
+use App\Models\Notification;
+use App\Models\TrashBin;
+use App\Models\CollectionRun;
+use App\Models\DropOffLocation;
+
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -19,9 +24,31 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'username',
         'password',
+        'role',
+        'phone',
     ];
+
+    public function schedules() {
+        return $this->hasMany(Schedule::class, 'user_id');
+    }
+
+    public function notifications() {
+        return $this->has(Notification::class, 'user_id');
+    }
+
+    public function trashBins() {
+        return $this->hasMany(TrashBin::class, 'resident_id');
+    }
+
+    public function collectionRuns() {
+        return $this->hasMany(CollectionRun::class, 'collector_id');
+    }
+
+    public function dropOffLocations() {
+        return $this->hasMany(DropOffLocation::class, 'created_by');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,7 +68,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            // 'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

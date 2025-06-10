@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PickupLog;
+use App\Models\Schedule;
+use App\Models\User;
 
 class TrashBin extends Model
 {
@@ -30,5 +33,13 @@ class TrashBin extends Model
     public function resident()
     {
         return $this->belongsTo(User::class, foreignKey: 'resident_id');
+    }
+
+    public function schedules() {
+        return $this->hasMany(Schedule::class, foreignKey: 'trash_bin_id');
+    }
+
+    public function pickupLogs() {
+        return $this->hasMany(PickupLog::class, foreignKey: 'trash_bin_id');
     }
 }

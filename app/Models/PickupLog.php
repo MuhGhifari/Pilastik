@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CollectionRun;
+use App\Models\TrashBin;
+use App\Models\Rating;
 
 class PickupLog extends Model
 {
@@ -33,5 +36,9 @@ class PickupLog extends Model
     public function collectionRun()
     {
         return $this->belongsTo(CollectionRun::class, 'collection_run_id');
+    }
+
+    public function ratings() {
+        return $this->hasMany(Rating::class, 'pickup_log_id');
     }
 }

@@ -34,4 +34,20 @@ class Schedule extends Model
     {
         return $this->belongsTo(TrashBin::class, 'trash_bin_id');
     }
+
+    /**
+     * Get the user who created the schedule
+     */
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Get the user who updated the schedule
+     */
+
+    public function updatedBy() {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

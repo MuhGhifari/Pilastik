@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CollectionRun;
 
 class Vehicle extends Model
 {
@@ -21,11 +22,7 @@ class Vehicle extends Model
         'capacity',
     ];
 
-    /**
-     * Get the user that owns the vehicle.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
+    public function collectionRun() {
+        return $this->hasMany(CollectionRun::class, 'vehicle_id');
     }
 }
