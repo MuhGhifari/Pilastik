@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts/app')
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pilastik Login</title>
-</head>
-
-<body class="bg-white flex items-center justify-center min-h-screen font-sans">
+@section('title', 'Pilastik|Login')
+@section('content')
+<div class="container bg-white flex items-center justify-center min-h-screen font-sans">
   <div class="w-80 p-6 space-y-6">
     <!-- Logo -->
     <div class="flex flex-col items-center space-y-2">
       <!-- Replace with actual logo image if needed -->
       <img src="{{ asset('images/logo-fill.png') }}" alt="Pilastik Logo" class="w-48 h-auto">
-      <h1 class="text-xl font-bold text-green-900">Pilahan berbasis Statistik</h1>
+      <h1 class="text-xl font-bold text-grass hover:bg-grass-dark">Pilahan berbasis Statistik</h1>
     </div>
 
     <!-- Input fields -->
@@ -28,7 +23,7 @@
     </div>
 
     <!-- Log In Button -->
-    <button class="w-full py-2 bg-green-900 text-white rounded-full font-semibold hover:bg-green-800">
+    <button class="w-full py-2 bg-grass hover:bg-grass-dark text-white rounded-full font-semibold">
       Log In
     </button>
 
@@ -37,6 +32,5 @@
       <a href="#" class="text-xs text-gray-700 hover:underline">Lupa Sandi?</a>
     </div>
   </div>
-</body>
-
-</html>
+</div>
+@endsection
