@@ -10,7 +10,7 @@ use App\Models\User;
 class TrashBin extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
+    const BIN_TYPES = ['organic', 'inorganic'];
     /**
      * The attributes that are mass assignable.
      *
@@ -23,8 +23,6 @@ class TrashBin extends Model
         'latitude',
         'longitude',
         'capacity',
-        'last_collected_at',
-        'next_collection_due',
     ];
 
     /**

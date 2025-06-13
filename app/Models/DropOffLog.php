@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\DropOffLocation;
-use App\Models\CollectionRuns;
+use App\Models\CollectionRun;
 
 class DropOffLog extends Model
 {

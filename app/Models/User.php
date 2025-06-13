@@ -16,6 +16,7 @@ use App\Models\DropOffLocation;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    const ROLES = ['admin', 'collector', 'resident'];
 
     /**
      * The attributes that are mass assignable.

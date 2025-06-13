@@ -9,7 +9,7 @@ use App\Models\User;
 class DropOffLocation extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
+    const STATUS = ["active", "closed"];
     /**
      * The attributes that are mass assignable.
      *
