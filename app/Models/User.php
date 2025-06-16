@@ -25,11 +25,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'username',
+        // 'username',
+        'email',
         'password',
         'role',
         'phone',
     ];
+
+    // public function getAuthIdentifierName() {
+    //     return 'username';
+    // }
 
     public function schedules() {
         return $this->hasMany(Schedule::class, 'user_id');

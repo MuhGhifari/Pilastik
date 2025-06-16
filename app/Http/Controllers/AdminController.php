@@ -9,6 +9,7 @@ use App\Models\DropOffLocation;
 use App\Models\Schedule;
 use App\Models\Vehicle;
 use App\Models\TrashBin;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {

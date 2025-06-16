@@ -23,30 +23,17 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        // First, randomly select a role.
-        // I've changed 'user' to 'resident' to match your password requirements.
         $role = fake()->randomElement(['admin', 'resident', 'collector']);
 
-        // Then, determine the password based on the selected role.
-        $password = 'password'; // Default password
-        switch ($role) {
-            case 'admin':
-                $password = 'adminadmin';
-                break;
-            case 'resident':
-                $password = 'warga';
-                break;
-            case 'collector':
-                $password = 'kolektor';
-                break;
-        }
+        $phoneNumber = fake()->unique()->phoneNumber();
 
         return [
             'name' => fake()->name(),
-            'username' => fake()->unique()->username(),
-            'password' => static::$password ??= bcrypt($password),
+            // 'username' => fake()->unique()->username(),
+            'email' => fake()->unique()->email(),
             'role' => $role,
-            'phone' => fake()->unique()->phoneNumber(),
+            'phone' => $phoneNumber,
+            'password' => bcrypt($phoneNumber),
         ];
     }
 }

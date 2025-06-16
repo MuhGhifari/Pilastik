@@ -5,9 +5,31 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@font-face {
+    font-family: "Coolvetica";
+    src: url("../fonts/Coolvetica\ Rg.otf");
+}
+
+/* @font-face {
+    font-family: 'Helvetica';
+    src: url('../fonts/Helvetica.ttc');
+} */
+
+/* @font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeue.ttc');
+} */
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('../fonts/Avenir.ttc');
+}
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-coolvetica: 'Coolvetica';
+    --font-helvetica: 'Helvetica';
+    --font-helvetica-neue: 'Helvetica Neue';
+    --font-avenir: 'Avenir';
 
     --color-algae: #9ABA6F;
     --color-algae-light: #BCC6AE;
@@ -17,8 +39,8 @@
     --color-grass-light: #6F8670;
     --color-grass-dark: #57693F;
 
-    --color-tennis: #B7C9B9;
-    --color-tennis-light: #A9D7AE;
+    --color-tennis: #AABA95;
+    --color-tennis-light: #E7EFDA;
     --color-tennis-dark: #799A7D;
 
     --color-forest: #3D5F3E;
@@ -38,6 +60,22 @@
     --color-primary-dark: #1E4D9D;
 
     --color-secondary: #B9B9B9;
-    --color-secondary-light: #D9D9D9;
+    --color-secondary-light: #F1F1F1;
     --color-secondary-dark: #9C9C9C;
 }
+
+@layer components {
+    .nav-item {
+        @apply font-coolvetica font-extralight md:text-lg lg:text-2xl flex items-center md:px-5 lg:px-8 py-3 text-grass hover:bg-grass hover:text-white lg:h-16 md:h-10 tracking-wide;
+    }
+
+    .nav-item.active {
+        @apply font-coolvetica font-extralight md:text-lg lg:text-2xl flex items-center md:px-5 lg:px-8 py-3 text-grass hover:bg-grass hover:text-white lg:h-16 md:h-10 tracking-wide bg-[#D9D9D9];
+    }
+
+    .nav-icon {
+        @apply h-5 w-5 ml-auto text-grass hover:text-white fill-current;
+    }
+}
+
+@font

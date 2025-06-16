@@ -21,14 +21,14 @@ class UserSeeder extends Seeder
         $roles = ['admin', 'resident', 'resident', 'collector', 'resident', 'collector'];
 
         foreach ($users as $index => $name) {
-            User::create([
+            User::factory()->create([
                 'name' => $name,
-                'username' => strtolower($name),
-                'password' => bcrypt($roles[$index]), // Use a secure password in production
+                'email' => strtolower($name . '@gmail.com'),
                 'role' => $roles[$index],
-                'phone' => fake()->unique()->phoneNumber(),
+                'password' => bcrypt('pass' . strtolower($name)),
             ]);
         }
+
 
         User::factory()->count(25)->create();
     }
