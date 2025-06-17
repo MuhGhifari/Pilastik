@@ -30,13 +30,13 @@
 				</svg>
 			</button>
 			@yield('content')
-			<footer class="w-full h-15 bg-tennis flex justify-center items-center">
+			<footer class="shrink-0 w-full bg-grass py-4 text-center text-white text-sm font-medium whitespace-nowrap">
 				<p class="font-helvetica font-bold text-center text-white text-sm ">© Universitas Pakuan Bogor 2025</p>
 			</footer>
 		</main>
 	</div>
 	@yield('scripts')
-
+	@vite('resources/js/dashboard.js')
 	<script>
 		let sidebarOpen = true;
 		function toggleSidebar() {
