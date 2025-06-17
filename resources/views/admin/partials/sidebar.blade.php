@@ -12,6 +12,8 @@
 			class="nav-item {{ Route::is('admin.trash_bins') ? 'active inner-shadow' : '' }}">Sampah Warga</a>
 		<a href="{{ route('admin.users') }}"
 			class="nav-item {{ Route::is('admin.users') ? 'active inner-shadow' : '' }}">Kelola Pengguna</a>
+		<a href="{{ route('admin.schedules') }}"
+			class="nav-item {{ Route::is('admin.schedules') ? 'active inner-shadow' : '' }}">Jadwal</a>
 	</nav>
 	<form class="mt-auto w-full font-helvetica font-bold text-xl md:px-5 lg:px-8 mb-4" action="{{ route('logout') }}"
 		method="POST">
