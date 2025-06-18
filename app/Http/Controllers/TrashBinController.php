@@ -24,18 +24,19 @@ class TrashBinController extends Controller
     }
 
     public function store(Request $request) {
-        $validated = $request->validate([
-            'resident_id' => 'required|integer',
-            'bin_type' => ['required', Rule::in(TrashBin::BIN_TYPES)],
-            'status' => 'required|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'capacity' => 'required|numeric',
-        ]); 
+        // $validated = $request->validate([
+        //     'resident_id' => 'required|integer',
+        //     'bin_type' => ['required', Rule::in(TrashBin::BIN_TYPES)],
+        //     'status' => 'required|string',
+        //     'latitude' => 'required|string',
+        //     'longitude' => 'required|string',
+        //     'capacity' => 'required|numeric',
+        // ]); 
+        
+        $bin = TrashBin::create($request->all());
 
-        $bin = TrashBin::create($validated);
-
-        return response()->json(['message' => 'Trash Bin Ditambahkan!', 'trashBin' => $bin]);
+        // return response()->json(['message' => 'Trash Bin Ditambahkan!', 'trashBin' => $bin]);
+        return redirect()->route('admin.trash_bins')->with('success', 'Trash Bin Ditambahkan!');
     }
 
     public function update(Request $request, $id) {

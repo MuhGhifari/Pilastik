@@ -4,9 +4,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 	<!-- <link rel="stylesheet" href="all.min.css"> -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
 	@vite('resources/css/app.css')
+	@vite('resources/js/app.js')
 	@yield('styles')
 	<style>
 		.inner-shadow {
@@ -37,6 +40,7 @@
 	</div>
 	@yield('scripts')
 	@vite('resources/js/dashboard.js')
+	@vite('resources/js/datatable.js')
 	<script>
 		let sidebarOpen = true;
 		function toggleSidebar() {

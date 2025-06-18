@@ -35,12 +35,32 @@ class AdminController extends Controller
 
     public function trashBinsPage() {
         $trashBins = TrashBin::all();
+        // $users = User::where('role', 'resident')->get();
         return view('admin.trash_bins', compact('trashBins'));
+    }
+
+    public function addTrashBin() {
+        $residents = User::where('role', 'resident')->get();
+        return view('admin.add_trash_bin', compact('residents'));
+    }
+    
+    public function editTrashBin($id) {
+        $trashBin = TrashBin::find($id);
+        return view('admin.edit_trash_bin', compact(['trashBin']));
     }
 
     public function usersPage() {
         $users = User::all();
         return view('admin.users', compact('users'));
+    }
+
+    public function addUser() {
+        return view('admin.add_user');
+    }
+    
+    public function editUser($id) {
+        $user = User::find($id);
+        return view('admin.edit_user', compact(['user']));
     }
 
     public function vehiclesPage() {

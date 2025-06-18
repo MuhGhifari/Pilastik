@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('resident_id')->constrained('users')->onDelete('cascade');
             $table->string('bin_type'); 
             $table->string('status')->default('available'); 
-            $table->float('latitude');
-            $table->float('longitude');
+            $table->string('latitude');
+            $table->string('longitude');
             $table->float('capacity')->default(0); 
             $table->timestamps();
         });
