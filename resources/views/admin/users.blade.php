@@ -141,7 +141,7 @@
 
 			deleteForms.forEach(form => {
 				form.addEventListener('submit', function (e) {
-					const confirmed = confirm('Are you sure you want to delete this user?');
+					const confirmed = confirm('Yakin ingin menghapus data ini?');
 
 					if (!confirmed) {
 						e.preventDefault();

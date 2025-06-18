@@ -46,29 +46,32 @@ class TrashBinController extends Controller
             return response()->json(['message' => 'Trash Bin Tidak Ditemukan!'], 404);
         }
 
-        $validated = $request->validate([
-            'resident_id' => 'required|integer',
-            'bin_type' => ['required', Rule::in(TrashBin::BIN_TYPES)],
-            'status' => 'required|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'capacity' => 'required|numeric',
-        ]);
+        // $validated = $request->validate([
+        //     'resident_id' => 'required|integer',
+        //     'bin_type' => ['required', Rule::in(TrashBin::BIN_TYPES)],
+        //     'status' => 'required|string',
+        //     'latitude' => 'required|numeric',
+        //     'longitude' => 'required|numeric',
+        //     'capacity' => 'required|numeric',
+        // ]);
 
-        $bin->update($validated);
+        $bin->update($request->all());
 
-        return response()->json(['message' => 'Trash Bin Diperbarui!', 'trashBin' => $bin]);
+        // return response()->json(['message' => 'Trash Bin Diperbarui!', 'trashBin' => $bin]);
+        return redirect()->route('admin.trash_bins');
     }
 
-    public function delete($id) {
+    public function destroy($id) {
         $bin = TrashBin::find($id);
 
         if (!$bin) {
-            return response()->json(['message' => 'Trash Bin Tidak Ditemukan!'], 404);
+            // return response()->json(['message' => 'Trash Bin Tidak Ditemukan!'], 404);
+            return redirect()->route('admin.trash_bins')->with('failed', 'Tempat Sampah Gagal dihapus.');
         }
 
         $bin->delete();
 
-        return response()->json(['message' => 'Trash Bin Dihapus!']);
+        // return response()->json(['message' => 'Trash Bin Dihapus!']);
+        return redirect()->route('admin.trash_bins');
     }
 }

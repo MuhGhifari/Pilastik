@@ -71,7 +71,8 @@
 					<!-- Filter & Search -->
 					<div class="flex items-center gap-4 mb-4">
 						<h2 class="text-xl font-coolvetica text-forest m-0 p-0">Data Tempat Sampah</h2>
-						<a href="{{ route('admin.add.trash_bin') }}" class="bg-green-700 text-white px-6 py-2 rounded-full font-semibold">+ Tambah</a>
+						<a href="{{ route('admin.add.trash_bin') }}"
+							class="bg-green-700 text-white px-6 py-2 rounded-full font-semibold">+ Tambah</a>
 						<div class="ml-auto relative">
 							<input type="text" id="searchBox" class="rounded-full border px-4 py-1 pl-10 text-gray-600"
 								placeholder="Pencarian">
@@ -104,8 +105,9 @@
 									<td class="px-4 py-2">{{$bin->resident?->name}}</td>
 									<td class="px-4 py-2 text-center">
 										<p class="w-6 h-6">
-											<img src="{{ asset('icons/check.svg') }}" alt="Edit" class="w-full h-full object-contain"></td>
-										</p>
+											<img src="{{ asset('icons/check.svg') }}" alt="Edit" class="w-full h-full object-contain">
+									</td>
+									</p>
 									<td class="px-4 py-2">{{$bin->schedule?->collector?->name}}</td>
 									<td class="px-4 py-2 text-center">
 										<div class="flex items-center gap-2 justify-center">
@@ -148,6 +150,27 @@
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		}).addTo(map);
 
+		// Ganti lokasi default jika perlu
+		map.setView([-6.55, 106.72], 13); // Bogor misalnya
+
+		// Ambil data trash bin dari backend
+		var trashBins = @json($trashBins);
+
+		// Tambahkan marker ke peta
+		trashBins.forEach(function (bin) {
+			if (bin.latitude && bin.longitude) {
+				L.marker([parseFloat(bin.latitude), parseFloat(bin.longitude)])
+					.addTo(map)
+					.bindPopup(
+						`<strong>${bin.resident?.name ?? 'Tidak diketahui'}</strong><br>
+					Jenis: ${bin.bin_type}<br>
+					Status: ${bin.status}<br>
+					Kapasitas: ${bin.capacity}`
+					);
+			}
+		});
+
+
 		$(document).ready(function () {
 			$('#residentTable').DataTable({
 				paging: true,
@@ -166,6 +189,20 @@
 			// Optional: link search box manually
 			$('#searchBox').on('keyup', function () {
 				$('#residentTable').DataTable().search(this.value).draw();
+			});
+		});
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const deleteForms = document.querySelectorAll('.delete-form');
+
+			deleteForms.forEach(form => {
+				form.addEventListener('submit', function (e) {
+					const confirmed = confirm('Yakin ingin menghapus data?');
+
+					if (!confirmed) {
+						e.preventDefault();
+					}
+				});
 			});
 		});
 	</script>

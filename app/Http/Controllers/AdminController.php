@@ -45,8 +45,9 @@ class AdminController extends Controller
     }
     
     public function editTrashBin($id) {
+        $residents = User::where('role', 'resident')->get();
         $trashBin = TrashBin::find($id);
-        return view('admin.edit_trash_bin', compact(['trashBin']));
+        return view('admin.edit_trash_bin', compact(['trashBin', 'residents']));
     }
 
     public function usersPage() {
