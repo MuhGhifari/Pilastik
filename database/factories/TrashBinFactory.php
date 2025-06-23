@@ -21,7 +21,7 @@ class TrashBinFactory extends Factory
 
         return [
             'resident_id' => fake()->randomElement($residents),
-            'bin_type' => fake()->randomElement(['organic', 'unorganic']),
+            'bin_type' => fake()->randomElement(['organic', 'inorganic']),
             'status' => fake()->randomElement(['ready', 'collected']),
             'latitude' => fake()->latitude(min: -6.589107, max: -6.594947),
             'longitude' => fake()->longitude(min: 106.819663, max: 106.830666),

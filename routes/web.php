@@ -1,90 +1,103 @@
 <?php
 
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\TestController;
-use App\Http\Controllers\TrashBinController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CollectorController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\{
+    AdminController,
+    AuthController,
+    CollectorController,
+    CollectionRunController,
+    RatingController,
+    ScheduleController,
+    TestController,
+    TrashBinController,
+    UserController,
+    VehicleController,
+		ResidentController
+};
 
+// Test Route
 Route::get('/test', [TestController::class, 'show'])->name('test.show');
+Route::get('/test/this', [TestController::class, 'test'])->name('test.this');
+Route::get('/test/report', [TestController::class, 'report'])->name('test.report');
 
-Route::get('/', function () {
-	if (!Auth::check()) {
-		return redirect()->route('login');
-	}
-
-	$user = Auth::user();
-	if($user->role == 'admin') {
-		return redirect()->route('admin.index');
-	} elseif ($user->role == 'collector') {
-		return redirect()->route('collector.index');
-	} elseif($user->role == 'resident') {
-		return redirect()->route('resident.index');
-	} else {
-		abort(403);
-	}
-
-})->name('index');
-
+// Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('show.login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->group(function () {
-	Route::get('/', [AdminController::class, 'index'])->name('admin.index')->middleware('role:admin');
-	Route::get('/dashboard', [AdminController::class, 'dashboardPage'])->name('admin.dashboard')->middleware('role:admin');
+// Root Route
+Route::get('/', function () {
+	if (!Auth::check()) return redirect()->route('login');
 
-	Route::get('/users', [AdminController::class, 'usersPage'])->name('admin.users')->middleware('role:admin');
-	Route::get('/users/add', [AdminController::class, 'addUser'])->name('admin.add.user')->middleware('role:admin');
-	Route::get('/users/edit/{id}', [AdminController::class, 'editUser'])->name('admin.edit.user')->middleware('role:admin');
-	Route::post('/users', [UserController::class, 'store'])->name('user.store')->middleware('role:admin');
-	Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user.update')->middleware('role:admin');
-	Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.delete')->middleware('role:admin');
+	$user = Auth::user();
+	return match ($user->role) {
+		'admin'     => redirect()->route('admin.index'),
+		'collector' => redirect()->route('collector.index'),
+		'resident'  => redirect()->route('resident.index'),
+		default     => abort(403),
+	};
+})->name('index');
+
+// Admin Routes
+Route::prefix('admin')->middleware('role:admin')->group(function () {
+	// Dashboard
+	Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+	Route::get('/dashboard', [AdminController::class, 'dashboardPage'])->name('admin.dashboard');
+
+	// Users
+	Route::get('/users', [AdminController::class, 'usersPage'])->name('admin.users');
+	Route::get('/users/data', [UserController::class, 'getUsers'])->name('users.data');
+	Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+	Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
+	Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 	
-	Route::get('/trash-bins', [AdminController::class, 'trashBinsPage'])->name('admin.trash_bins')->middleware('role:admin');
-	Route::get('/trash-bins/add', [AdminController::class, 'addTrashBin'])->name('admin.add.trash_bin')->middleware('role:admin');
-	Route::get('/trash-bins/edit/{id}', [AdminController::class, 'editTrashBin'])->name('admin.edit.trash_bin')->middleware('role:admin');
-	Route::post('/trash-bins', [TrashBinController::class, 'store'])->name('trash_bin.store')->middleware('role:admin');
-	Route::post('/trash-bins/update/{id}', [TrashBinController::class, 'update'])->name('trash_bin.update')->middleware('role:admin');
-	Route::delete('/trash-bins/{id}', [TrashBinController::class, 'destroy'])->name('trash_bin.delete')->middleware('role:admin');
-	
-	Route::get('/vehicles', [AdminController::class, 'vehiclesPage'])->name('admin.vehicles')->middleware('role:admin');
-	Route::get('/vehicles/add', [AdminController::class, 'addTrashBin'])->name('admin.add.trash_bin')->middleware('role:admin');
-	Route::get('/vehicles/edit/{id}', [AdminController::class, 'editTrashBin'])->name('admin.edit.vehicle')->middleware('role:admin');
-	Route::post('/vehicles', [VehicleController::class, 'store'])->name('vehicle.store')->middleware('role:admin');
-	Route::post('/vehicles/update/{id}', [VehicleController::class, 'update'])->name('vehicle.update')->middleware('role:admin');
-	Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicle.delete')->middleware('role:admin');
-	
-	Route::get('/schedules', [AdminController::class, 'schedulesPage'])->name('admin.schedules')->middleware('role:admin');
-	Route::get('/schedules/add', [AdminController::class, 'addTrashBin'])->name('admin.add.trash_bin')->middleware('role:admin');
-	Route::get('/schedules/edit/{id}', [AdminController::class, 'editTrashBin'])->name('admin.edit.schedule')->middleware('role:admin');
-	Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedule.store')->middleware('role:admin');
-	Route::post('/schedules/update/{id}', [ScheduleController::class, 'update'])->name('schedule.update')->middleware('role:admin');
-	Route::delete('/schedules/{id}', [ScheduleController::class, 'destroy'])->name('schedule.delete')->middleware('role:admin');
+	// Trash Bins
+	Route::get('/trash-bins', [AdminController::class, 'trashBinsPage'])->name('admin.trash_bins');
+	Route::get('/trash-bins/data', [TrashBinController::class, 'getTrashBins'])->name('trash_bins.data');
+	Route::post('/trash-bins/store', [TrashBinController::class, 'store'])->name('trash_bins.store');
+	Route::post('/trash-bins/update/{id}', [TrashBinController::class, 'update'])->name('trash_bins.update');
+	Route::delete('/trash-bins/delete/{id}', [TrashBinController::class, 'destroy'])->name('trash_bins.delete');
+
+	// Vehicles
+	Route::get('/vehicles', [AdminController::class, 'vehiclesPage'])->name('admin.vehicles');
+	Route::get('/vehicles/add', [AdminController::class, 'addVehicle'])->name('admin.vehicles.add');
+	Route::get('/vehicles/edit/{id}', [AdminController::class, 'editVehicle'])->name('admin.vehicles.edit');
+	Route::post('/vehicles', [VehicleController::class, 'store'])->name('vehicles.store');
+	Route::post('/vehicles/update/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
+	Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.delete');
+
+	// Schedules
+	Route::get('/schedules', [AdminController::class, 'schedulesPage'])->name('admin.schedules');
+	Route::get('/schedules/add', [AdminController::class, 'addSchedule'])->name('admin.schedules.add');
+	Route::get('/schedules/edit/{id}', [AdminController::class, 'editSchedule'])->name('admin.schedules.edit');
+	Route::post('/schedules/store', [ScheduleController::class, 'store'])->name('schedules.store');
+	Route::post('/schedules/update/{id}', [ScheduleController::class, 'update'])->name('schedules.update');
+	Route::delete('/schedules/delete/{id}', [ScheduleController::class, 'destroy'])->name('schedules.delete');
 });
 
-Route::prefix('collector')->group(function () {
-	Route::get('/', [CollectorController::class, 'index'])->name('collector.index')->middleware('role:collector');
-	Route::get('/collection-run', [CollectorController::class, 'collectionRunPage'])->name('collector.collection_run')->middleware('role:collector');
-	Route::get('/map', [CollectorController::class, 'collectorMap'])->name('collector.map')->middleware('role:collector');
-	Route::get('/trash-bin/{id}/penilaian', [CollectorController::class, 'ratingPage'])->name('collector.rating')->middleware('role:collector');
-	ROute::post('/trash-bin/penilaian', [RatingController::class, 'store'])->name('rating.store')->middleware('role:collector');
-
+// Collector Routes
+Route::prefix('collector')->middleware('role:collector')->group(function () {
+	Route::get('/', [CollectorController::class, 'index'])->name('collector.index');
+	
+	Route::get('/collection-run', [CollectorController::class, 'collectionRunPage'])->name('collector.collection_run');
+	Route::post('/collection-run/begin', [CollectionRunController::class, 'beginCollectionRun'])->name('collector.collection_run.begin');
+	Route::post('/collection-run/stop', [CollectionRunController::class, 'stopCollectionRun'])->name('collector.collection_run.stop');
+	
+	Route::get('/map', [CollectorController::class, 'collectorMap'])->name('collector.map');
+	
+	Route::get('/trash-bin/{id}/rate', [CollectorController::class, 'ratingPage'])->name('collector.rate');
+	Route::post('/trash-bin/{id}/rate/store', [RatingController::class, 'store'])->name('rating.store');
+	
+	// Rating
+	Route::get('/trash-bin/{id}/penilaian', [CollectorController::class, 'ratingPage'])->name('collector.rating');
+	Route::post('/trash-bin/penilaian/submit', [RatingController::class, 'store'])->name('rating.store');
+	
+	Route::get('/drop-off', [CollectorController::class,  'dropOffPage'])->name('collector.dropoff');
+	Route::post('/drop-off/{id}', [CollectorController::class,  'storeDropOff'])->name('dropoff.store');
 });
 
-// Route::prefix('collector')->group(function () {
-// 	Route::get('/', function () {
-// 		return view('collector.home');
-// 	})->name('collector.index');
-// });
-
-Route::prefix('resident')->group(function () {
-	Route::get('/', function () {
-		return view('resident.home');
-	})->name('resident.home');
+Route::prefix('resident')->middleware('role:resident')->group(function () {
+	Route::get('/', [ResidentController::class, 'index'])->name('resident.index');
+	
 });

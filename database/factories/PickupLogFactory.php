@@ -24,6 +24,7 @@ class PickupLogFactory extends Factory
         return [
             'collection_run_id' => fake()->randomElement($collectionRuns),
             'trash_bin_id' => fake()->randomElement($trashBins),
+            'weight' => fake()->numberBetween(5, 20),
             'pickup_time' => fake()->dateTimeBetween('now', '+1 week'),
         ];
     }

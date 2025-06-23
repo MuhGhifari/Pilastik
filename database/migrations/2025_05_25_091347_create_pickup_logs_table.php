@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('collection_run_id')->constrained('collection_runs')->onDelete('cascade');
             $table->foreignId('trash_bin_id')->constrained()->onDelete('cascade');
+            $table->integer('weight');
             $table->timestamp('pickup_time')->default(now());
             $table->timestamps();
         });

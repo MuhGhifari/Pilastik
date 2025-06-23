@@ -8,9 +8,9 @@
 	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 	<!-- <link rel="stylesheet" href="all.min.css"> -->
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
-	@vite('resources/css/app.css')
-	@vite('resources/js/app.js')
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
 	@yield('styles')
+	@stack('styles')
 	<style>
 		.inner-shadow {
 			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25) inset;
@@ -33,12 +33,13 @@
 				</svg>
 			</button>
 			@yield('content')
-			<footer class="shrink-0 w-full bg-grass py-4 text-center text-white text-sm font-medium whitespace-nowrap">
+			<footer class="shrink-0 w-full bg-tennis py-4 text-center text-white text-sm font-medium whitespace-nowrap">
 				<p class="font-helvetica font-bold text-center text-white text-sm ">© Universitas Pakuan Bogor 2025</p>
 			</footer>
 		</main>
 	</div>
 	@yield('scripts')
+	@stack('scripts')
 	@vite('resources/js/dashboard.js')
 	@vite('resources/js/datatable.js')
 	<script>

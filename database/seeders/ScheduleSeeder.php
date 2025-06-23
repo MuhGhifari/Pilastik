@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TrashBin;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Schedule;
@@ -13,6 +14,13 @@ class ScheduleSeeder extends Seeder
      */
     public function run(): void
     {
-        Schedule::factory()->count(10)->create();
+        $bins = TrashBin::all();
+
+        foreach ($bins as $key => $bin) {
+            Schedule::factory()->create([
+                'trash_bin_id' => $bin->id
+            ]);
+        }
+
     }
 }

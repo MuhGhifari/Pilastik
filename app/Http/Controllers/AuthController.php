@@ -22,7 +22,7 @@ class AuthController extends Controller
         } elseif ($user->role == 'collector') {
             return redirect()->route('collector.index');
         } elseif ($user->role == 'resident') {
-            return redirect()->route('resident.home');
+            return redirect()->route('resident.index');
         } else {
             abort(403);
         }

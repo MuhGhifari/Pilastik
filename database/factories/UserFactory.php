@@ -29,11 +29,12 @@ class UserFactory extends Factory
 
         return [
             'name' => fake()->name(),
-            // 'username' => fake()->unique()->username(),
             'email' => fake()->unique()->email(),
             'role' => $role,
             'phone' => $phoneNumber,
             'password' => bcrypt($phoneNumber),
+            'date_of_birth' => fake()->dateTimeBetween('-50 years', '-20 years'),
+            'address' => fake()->address(),
         ];
     }
 }

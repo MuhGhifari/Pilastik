@@ -10,21 +10,29 @@ use App\Models\Collector;
 class CollectorController extends Controller
 {
 
-    public function index() {
+    public function index()
+    {
         return view('collector.home');
     }
-    
-    public function collectionRunPage() {
-        $vehicles = Vehicle::where('status', 'available');
-        return view('collector.collection_run', compact('vehicles'));
+
+    public function collectionRunPage()
+    {
+        $schedules = auth()->user()->collector_schedules()->with('trashBin.resident')->get();
+        $vehicles = Vehicle::where('status', 'available')->get();
+        return view('collector.collection_run', compact(['vehicles', 'schedules']));
     }
 
-    public function collectorMap() {
-        return view('collector.map');
+    public function collectorMap()
+    {
+        $collection_run = auth()->user()->collectionRuns->where('status', 'in_progress')->first();
+        $schedules = auth()->user()->collector_schedules()->with('trashBin.resident')->get();
+        return view('collector.map', compact(['collection_run', 'schedules']));
     }
 
-    public function ratingPage($id) {
+    public function ratingPage($id)
+    {
         $trashBin = TrashBin::findOrFail($id);
-        return view('collector.rating', compact('trashBin'));
+        $resident = $trashBin->resident;
+        return view('collector.rating', compact(['trashBin', 'resident']));
     }
 }

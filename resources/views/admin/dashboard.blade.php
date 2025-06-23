@@ -46,13 +46,15 @@
 			<div class="flex flex-col w-1/3 h-full gap-8">
 				<x-card title="Progres Pengumpulan Harian" class="h-auto gap-4">
 					<div class="w-full flex bg-tennis-light rounded-full h-8">
-						<div class="bg-grass h-8 rounded-full text-white text-sm w-[72%] flex justify-center items-center">
-							<span class="font-helvetica font-base font-white text-lg">72%</span>
+						<div style="width: {{ $progressPercentage }}%;"
+							class="bg-grass h-8 rounded-full text-white text-sm flex justify-center items-center">
+							<span class="font-helvetica font-base font-white text-lg">{{ $progressPercentage }}%</span>
 						</div>
 					</div>
 					<div class="flex flex-1 justify-center items-center">
 						<p class="font-helvetica text-base text-secondary-dark">
-							<span class="font-bold text-grass">72</span> dari 100 Lokasi Sudah Selesai
+							<span class="font-bold text-grass">{{ $totalCollectedBins }}</span> dari {{$totalTrashBins}} Lokasi Sudah
+							Selesai
 						</p>
 					</div>
 				</x-card>
@@ -100,6 +102,17 @@
 			</div>
 		</div>
 	</div>
+	<x-card>
+		<form method="GET" action="{{ route('test.report') }}">
+			<div class="flex gap-2 items-center">
+				<label for="id" class="font-semibold">ID:</label>
+				<input type="text" id="id" name="id" class="border rounded px-2 py-1" placeholder="ID">
+				<label for="bin_type" class="font-semibold">Tipe:</label>
+				<input type="text" id="bin_type" name="bin_type" class="border rounded px-2 py-1" placeholder="Tipe">
+				<button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Terapkan</button>
+			</div>
+		</form>
+	</x-card>
 @endsection
 
 @section('scripts')
@@ -110,5 +123,64 @@
 			maxZoom: 19,
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		}).addTo(map);
+
+		document.addEventListener('DOMContentLoaded', () => {
+			// Donut Chart
+			const donutCtx = document.getElementById('donutChart');
+			if (donutCtx) {
+				new Chart(donutCtx, {
+					type: 'doughnut',
+					data: {
+						labels: ['Organik', 'Anorganik'],
+						datasets: [{
+							data: [{{ $totalOrganic }}, {{ $totalInorganic }}],
+							backgroundColor: ['#AABA95', '#E6B759'],
+						}]
+					}
+				});
+			}
+
+			// Weekly Bar Chart
+			const weeklyCtx = document.getElementById('weeklyChart');
+			const weeklyWaste = @json($weeklyWaste); // expects: { labels: [...], organik: [...], anorganik: [...] }
+			if (weeklyCtx && weeklyWaste) {
+				new Chart(weeklyCtx, {
+					type: 'bar',
+					data: {
+						labels: weeklyWaste.labels,
+						datasets: [
+							{
+								label: 'Organik',
+								data: weeklyWaste.organic,
+								backgroundColor: '#AABA95'
+							},
+							{
+								label: 'Anorganik',
+								data: weeklyWaste.inorganic,
+								backgroundColor: '#E6B759'
+							}
+						]
+					},
+					options: {
+						responsive: true,
+						scales: {
+							y: {
+								beginAtZero: true
+							}
+						}
+					}
+				});
+			}
+		});
+
+		window.addEventListener('resize', () => {
+			if (Chart.instances) {
+				Object.values(Chart.instances).forEach(chart => {
+					if (chart && typeof chart.resize === 'function') {
+						chart.resize();
+					}
+				});
+			}
+		});
 	</script>
 @endsection

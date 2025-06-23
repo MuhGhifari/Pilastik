@@ -184,23 +184,6 @@
 			Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.
 		</p>
 	</x-form-modal>
-	<x-form-modal id="printFilterModal" title="Filter Cetak" method="GET" action="{{ route('test.this') }}" openEvent="open-print-filter-modal">
-		<form method="GET" action="{{ route('test.this') }}">
-			<div class="flex gap-2 items-center">
-				<label for="id" class="font-semibold">ID:</label>
-				<input type="text" id="id" name="id" class="border rounded px-2 py-1" placeholder="ID">
-				<label for="bin_type" class="font-semibold">Tipe:</label>
-				<input type="text" id="bin_type" name="bin_type" class="border rounded px-2 py-1" placeholder="Tipe">
-				<button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Terapkan</button>
-			</div>
-		</form>
-	</x-form-modal>
-	<x-form-modal id="deleteConfirmModal" title="Konfirmasi Hapus" method="DELETE" openEvent="open-delete-trash-bin-form">
-		<input type="hidden" id="delete-trash-bin-id" name="trash_bin_id">
-		<p class="font-helvetica text-center text-base text-secondary">
-			Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.
-		</p>
-	</x-form-modal>
 	<x-status-modal />
 @endsection
 
@@ -308,20 +291,14 @@
 			});
 			// Add button to the left side of the bottom section
 			$('.add-button').html(`
-				<button id="printTrash" 
-					class="bg-secondary text-black font-medium px-4 py-2 rounded hover:bg-secondary-dark cursor-pointer">
-				Print</button>
-				<button id="addTrashBin"
-					class="bg-grass text-white font-medium px-4 py-2 rounded hover:bg-grass-dark cursor-pointer">
-					Tambah Data
-				</button>
-			`);
+																	<button id="addTrashBin"
+																		class="bg-grass text-white font-medium px-4 py-2 rounded hover:bg-grass-dark cursor-pointer">
+																		Tambah Data
+																	</button>
+																`);
 			$('#trashTable_wrapper .dataTables_length').addClass('flex items-center gap-2 whitespace-nowrap');
 		});
 
-		$(document).on('click', '#printTrash', function () {
-			window.dispatchEvent(new Event('open-print-filter-modal'));
-		});
 		$(document).on('click', '#addTrashBin', function () {
 			window.dispatchEvent(new Event('open-add-trash-bin-form'));
 			var addTrashMap = L.map('addTrashMap').setView([-6.55, 106.72], 13); // Ganti ke lokasi defaultmu

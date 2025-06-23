@@ -33,8 +33,8 @@ class TrashBin extends Model
         return $this->belongsTo(User::class, foreignKey: 'resident_id');
     }
 
-    public function schedules() {
-        return $this->hasMany(Schedule::class, foreignKey: 'trash_bin_id');
+    public function schedule() {
+        return $this->hasOne(Schedule::class, foreignKey: 'trash_bin_id');
     }
 
     public function pickupLogs() {

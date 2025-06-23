@@ -1,74 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informasi Pengangkutan</title>
-    <link rel="stylesheet" href="hmpage_collect.css">
-</head>
-<body>
-    <div class="home-container pickup-container">
-        <div class="header-bar">
-            <a href="#" onclick="history.back();" class="back-arrow">&#8592;</a>
-            <div class="home-logo">
-                <img src="img/logo pilastik.png" alt="PILASTIK Logo">
-            </div>
-        </div>
+@extends('collector.layouts.app')
 
-        <h1 class="page-title">Informasi Pengangkutan</h1>
+@section('styles')
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+@endsection
 
-        <div class="map-container card-style">
-            <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=106.77535057067871%2C-6.661879532501472%2C106.85131072998048%2C-6.606633675940122&amp;layer=mapnik"
-                frameborder="0"
-                scrolling="no"
-                marginheight="0"
-                marginwidth="0"
-                class="embedded-map"
-            ></iframe>
-            <small class="map-attribution">
-                <a href="https://www.openstreetmap.org/?#map=14/-6.63426/106.81333" target="_blank">Lihat Peta Lebih Besar</a>
-                | &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">Kontributor OpenStreetMap</a>
-            </small>
-        </div>
+@section('content')
+	<div class="content flex flex-col w-full gap-4 py-4 px-4 flex-1">
+		<div class="h-1/2">
+			<x-map id="map"></x-map>
+		</div>
+		<x-card class="flex-1 h-auto gap-4" title="Info Jadwal">
+			<div class="flex flex-col gap-2 font-helvetica text-secondary-dark">
+				<table class="table-auto text-sm font-medium text-left">
+					<tbody>
+						<tr>
+							<th class="w-3/10">Titik Lokasi</th>
+							<td class="w-1/10">:</td>
+							<td class="">{{ count($schedules) }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<label for="latitude" class="block text-sm font-medium mb-2">Jam Mulai</label>
+				{{ now()->translatedFormat('H.i l, d M Y') }}
+			</div>
+			<form action="{{ route('collector.collection_run.begin') }}" method="POST">
+                @csrf
+				<div>
+					<label for="latitude" class="block text-sm font-medium mb-2">Plat Nomor Kendaraan</label>
+                    <select name="vehicle_id" class="w-full px-4 py-2 rounded-xl bg-secondary-light text-sm placeholder-gray-500 focus:outline-none" required>
+                    @foreach($vehicles as $vehicle)
+                        <option value="{{ $vehicle->id }}">{{ $vehicle->license_plate }}</option>
+                    @endforeach
+                    </select>
+				</div>
+				<div class="flex justify-center mt-6">
+					<button type="submit"
+						class="flex items-center justify-center w-24 h-24 rounded-full bg-grass hover:bg-grass-dark shadow-lg transition duration-200"
+						style="font-size: 3rem; color: white;"
+						aria-label="Play">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48" fill="currentColor">
+							<polygon points="26,18 50,32 26,46" fill="white"/>
+						</svg>
+					</button>
+				</div>
+			</form>
+		</div>
+		</x-card>
+@endsection
 
-        <div class="data-pengangkutan card-style">
-            <h2>Data Pengangkutan</h2>
-            <table>
-                <tr>
-                    <td>Tempat Sampah Yang Perlu di Angkut</td>
-                    <td>:</td>
-                    <td>htmlspecialchars($tempat_sampah)</td>
-                </tr>
-                <tr>
-                    <td>Info Kendaraan Yang Tersedia</td>
-                    <td>:</td>
-                    <td>htmlspecialchars($info_kendaraan)</td>
-                </tr>
-                <tr>
-                    <td>Hari Pengangkutan</td>
-                    <td>:</td>
-                    <td>htmlspecialchars($hari_pengangkutan)</td>
-                </tr>
-                <tr>
-                    <td>Nama Kolektor</td>
-                    <td>:</td>
-                    <td>htmlspecialchars($nama_kolektor)</td>
-                </tr>
-            </table>
-        </div>
+@section('scripts')
+	<script>
+		const iconGreen = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
 
-        <div class="play-button-container">
-            <a href="mulai.php" class="play-button">
-                <svg viewBox="0 0 24 24" width="80" height="80" fill="#fff">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-            </a>
-        </div>
+		const iconRed = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
 
-        <div class="footer-text">
-            &copy; Universitas Pakuan Bogor 2025
-        </div>
-    </div>
-</body>
-</html>
+		const iconGrey = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
+
+		const schedules = @json($schedules);
+		var map = L.map('map')
+
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
+
+		var bounds = L.latLngBounds([]);
+
+		schedules.forEach(schedule => {
+			let icon;
+			switch (schedule.trash_bin.status.toLowerCase()) {
+				case 'collected':
+					icon = iconGreen;
+					break;
+				default:
+					icon = iconGrey;
+			}
+
+			const marker = L.marker([schedule.trash_bin.latitude, schedule.trash_bin.longitude], { icon: icon }).addTo(map);
+			marker.bindPopup(`<strong>${schedule.trash_bin.resident.name}</strong><br>Alamat: ${schedule.trash_bin.resident.address}`);
+			bounds.extend([schedule.trash_bin.latitude, schedule.trash_bin.longitude]);
+		});
+
+		map.fitBounds(bounds, { padding: [30, 30] });
+	</script>
+@endsection

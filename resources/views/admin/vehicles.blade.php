@@ -18,9 +18,9 @@
 	<div class="content flex flex-col w-full gap-8 py-8 px-10 flex-1">
 		<div class="flex gap-8 w-full items-center justify-center">
 			<div class="w-2/3">
-				<x-display>Data Pengguna</x-display>
+				<x-display>Data Kendaraan</x-display>
 				<x-breadcrumb>
-					Admin &gt; <span class="text-black">Kelola Data Pengguna</span>
+					Admin &gt; <span class="text-black">Kelola Data Kendaraan</span>
 				</x-breadcrumb>
 			</div>
 			<div class="w-1/3">
@@ -30,22 +30,22 @@
 		<div class="flex flex-1 gap-8 w-full">
 			<x-card class="w-full flex-col">
 				<!-- Table -->
-				<table id="userTable" class="w-full text-sm text-left">
+				<table id="vehicleTable" class="w-full text-sm text-left">
 					<thead class="bg-tennis-light text-forest font-helvetica font-semibold">
 						<tr class="">
 							<th class="px-4 py-2 text-center">No</th>
-							<th class="px-4 py-2">Nama</th>
-							<th class="px-4 py-2">Email</th>
-							<th class="px-4 py-2">Tipe Pengguna</th>
-							<th class="px-4 py-2">No. Telpon</th>
-							<th class="px-4 py-2 text-center">Aksi</th>
+							<th class="px-4 py-2">Plat Nomor</th>
+							<th class="px-4 py-2">Tipe Kendaraan</th>
+							<th class="px-4 py-2">Model</th>
+							<th class="px-4 py-2">Status</th>
+							<th class="px-4 py-2 text-center">Kapasistas</th>
 						</tr>
 					</thead>
 				</table>
 			</x-card>
 		</div>
 	</div>
-	<x-form-modal id="addUserForm" title="Tambah Pengguna" method="POST" action="{{ route('users.store') }}"
+	<x-form-modal id="addVehicleForm" title="Tambah Kendaraan" method="POST" action="{{ route('vehicle.store') }}"
 		openEvent="open-add-user-form">
 		<div class="space-y-4">
 			<div>
@@ -83,9 +83,9 @@
 			</div>
 		</div>
 	</x-form-modal>
-	<x-form-modal id="editUserForm" title="Edit Pengguna" openEvent="open-edit-user-form">
+	<x-form-modal id="editVehicleForm" title="Edit Kendaraan" openEvent="open-edit-vehicle-form">
 		<div class="space-y-4">
-			<input id="user-id" type="hidden" name="user_id">
+			<input id="vehicle-id" type="hidden" name="vehicle_id">
 			<div>
 				<label for="user-name" class="block mb-1 font-semibold text-gray-700">Nama</label>
 				<input id="user-name" name="name" type="text" placeholder="Nama" autocomplete="name"
@@ -126,9 +126,9 @@
 		</div>
 	</x-form-modal>
 	<x-form-modal id="deleteConfirmModal" title="Konfirmasi Hapus" method="DELETE" openEvent="open-delete-user-form">
-		<input type="hidden" id="delete-user-id" name="user_id">
+		<input type="hidden" id="delete-user-id" name="vehicle_id">
 		<p class="font-helvetica text-center text-base text-secondary">
-			Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.
+			Apakah Anda yakin ingin menghapus Kendaraan ini? Tindakan ini tidak dapat dibatalkan.
 		</p>
 	</x-form-modal>
 	<x-status-modal />
@@ -137,15 +137,15 @@
 @section('scripts')
 	<script>
 		function setModalTitle(title) {
-			$('#addUserForm .modal-title').text(title);
+			$('#addVehicleForm .modal-title').text(title);
 		}
 
 		$(document).ready(function () {
-			$('#userTable').DataTable({
+			$('#vehicleTable').DataTable({
 				processing: true,
 				serverSide: true,
 				lengthMenu: [5,10,15,25,50],
-				ajax: '{{ route('users.data') }}',
+				ajax: '{{ route('vehicle.data') }}',
 				columns: [
 					{ data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '5%' },
 					{ data: 'name', name: 'name', width: '15%' },
@@ -171,7 +171,7 @@
 												Tambah Data
 											</button>
 										`);
-			$('#userTable_wrapper .dataTables_length').addClass('flex items-center gap-2 whitespace-nowrap');
+			$('#vehicleTable_wrapper .dataTables_length').addClass('flex items-center gap-2 whitespace-nowrap');
 		});
 
 		$(document).on('click', '#editUser', function () {
@@ -184,13 +184,13 @@
 			$('#user-role').val(button.data('role'));
 			$('#user-phone').val(button.data('phone'));
 
-			$('#editUserForm').attr('action', button.data('url'));
+			$('#editVehicleForm').attr('action', button.data('url'));
 
-			if (!$('#editUserForm input[name="_method"]').length) {
-				$('#editUserForm').append('<input type="hidden" name="_method" value="PUT">');
+			if (!$('#editVehicleForm input[name="_method"]').length) {
+				$('#editVehicleForm').append('<input type="hidden" name="_method" value="PUT">');
 			}
 
-			window.dispatchEvent(new CustomEvent('open-edit-user-form'));
+			window.dispatchEvent(new CustomEvent('open-edit-vehicle-form'));
 		});
 
 		$(document).on('click', '#deleteUser', function () {
@@ -208,7 +208,7 @@
 			window.dispatchEvent(new CustomEvent('open-delete-user-form'));
 		});
 
-		$('#addUserForm').on('submit', function (e) {
+		$('#addVehicleForm').on('submit', function (e) {
 			e.preventDefault();
 
 			const form = $(this);
@@ -223,7 +223,7 @@
 				success: function (response) {
 					window.dispatchEvent(new Event('close-modal-form'));
 					showStatus(response.status, response.title, response.message);
-					$('#userTable').DataTable().ajax.reload(null, false);
+					$('#vehicleTable').DataTable().ajax.reload(null, false);
 					window.dispatchEvent(new Event('close-modal-form'))
 				},
 				error: function (xhr) {
@@ -231,14 +231,14 @@
 					window.dispatchEvent(new CustomEvent('show-fail', {
 						detail: {
 							title: 'Gagal!',
-							message: 'Terjadi kesalahan saat menambahkan pengguna.'
+							message: 'Terjadi kesalahan saat menambahkan Kendaraan.'
 						}
 					}));
 				}
 			});
 		});
 
-		$('#editUserForm').on('submit', function (e) {
+		$('#editVehicleForm').on('submit', function (e) {
 			e.preventDefault();
 
 			const form = $(this);
@@ -255,7 +255,7 @@
 					showStatus(response.status, response.title, response.message);
 
 					// Reload DataTable to reflect updates
-					$('#userTable').DataTable().ajax.reload(null, false);
+					$('#vehicleTable').DataTable().ajax.reload(null, false);
 
 					form[0].reset();
 					window.dispatchEvent(new Event('close-modal-form'))
@@ -265,7 +265,7 @@
 					window.dispatchEvent(new CustomEvent('show-fail', {
 						detail: {
 							title: 'Gagal!',
-							message: 'Terjadi kesalahan saat memperbarui pengguna.'
+							message: 'Terjadi kesalahan saat memperbarui Kendaraan.'
 						}
 					}));
 				}
@@ -286,7 +286,7 @@
 				success: function (response) {
 					window.dispatchEvent(new Event('close-modal-form'));
 					showStatus(response.status, response.title, response.message);
-					$('#userTable').DataTable().ajax.reload(null, false);
+					$('#vehicleTable').DataTable().ajax.reload(null, false);
 					form[0].reset();
 					window.hideModal();
 				},
@@ -295,7 +295,7 @@
 					window.dispatchEvent(new CustomEvent('show-fail', {
 						detail: {
 							title: 'Gagal Menghapus',
-							message: 'Terjadi kesalahan saat menghapus pengguna.'
+							message: 'Terjadi kesalahan saat menghapus Kendaraan.'
 						}
 					}));
 				}

@@ -36,7 +36,7 @@ class TrashBinSeeder extends Seeder
 
             TrashBin::factory()->create([
                 'resident_id' => $resident,
-                'bin_type' => 'unorganic',
+                'bin_type' => 'inorganic',
                 'latitude' => $location['latitude'],
                 'longitude' => $location['longitude'],
                 'capacity' => $capacity,

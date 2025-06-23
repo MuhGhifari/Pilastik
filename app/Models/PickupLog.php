@@ -38,7 +38,7 @@ class PickupLog extends Model
         return $this->belongsTo(CollectionRun::class, 'collection_run_id');
     }
 
-    public function ratings() {
-        return $this->hasMany(Rating::class, 'pickup_log_id');
+    public function rating() {
+        return $this->hasOne(Rating::class, 'pickup_log_id');
     }
 }

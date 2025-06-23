@@ -17,6 +17,8 @@
     "dependencies": {
         "alpinejs": "^3.14.9",
         "chart.js": "^4.5.0",
-        "datatables.net-dt": "^2.3.2"
+        "datatables.net": "^2.3.2",
+        "datatables.net-dt": "^2.3.2",
+        "jquery": "^3.7.1"
     }
 }

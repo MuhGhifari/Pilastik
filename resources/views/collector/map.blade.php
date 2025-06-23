@@ -1,96 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Sampah - Pilastik</title>
-    <link rel="stylesheet" href="hmpage_collect.css">
-    <style>
-        /* Container utama halaman peta */
-        .map-page-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            margin: 50px auto;
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            max-width: 400px;
-            width: 90%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+@extends('collector.layouts.app')
 
-        /* Judul halaman peta */
-        .map-page-title {
-            text-align: center;
-            color: #333;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 15px 0;
-        }
+@section('styles')
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+@endsection
 
-        /* Tombol kembali */
-        .back-arrow {
-            color: #555;
-            font-size: 30px;
-            margin-left: 5px;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-        }
+@section('content')
+	@if(session('status'))
+		<script>
+			window.addEventListener('DOMContentLoaded', () => {
+				showStatus(
+					"{{ session('status') }}",
+					"{{ session('title') }}",
+					"{{ session('message') }}"
+				);
+			});
+		</script>
+	@endif
+	<div class="content flex flex-col w-full gap-4 py-4 px-4 flex-1">
+		<div class="h-full">
+			<x-map id="map"></x-map>
+		</div>
+	</div>
+@endsection
 
-        /* Gaya untuk iframe peta */
-        .embedded-osm-map {
-            width: 100%;
-            height: 350px;
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        }
+@section('scripts')
+	<script>
+		const iconGreen = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
 
-        /* Link atribusi peta */
-        .map-attribution-link {
-            text-align: right;
-            font-size: 12px;
-            margin-top: 5px;
-            color: #666;
-            text-decoration: none;
-        }
+		const iconRed = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
 
-        .map-attribution-link a {
-            color: #666;
-            text-decoration: none;
-        }
+		const iconGrey = new L.Icon({
+			iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
+		});
 
-        .map-attribution-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+		const schedules = @json($schedules);
+		var map = L.map('map')
 
-    <div class="map-page-container">
-        <header class="header-bar">
-            <a href="hmpage_collect.php" class="back-arrow">&#8592;</a>
-            <div class="home-logo">
-                <img src="{{ asset('images/logo pilastik.png') }}" alt="Logo PILASTIK">
-            </div>
-        </header>
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
 
-        <h1 class="map-page-title">Peta Lokasi Sampah</h1>
+		var bounds = L.latLngBounds([]);
 
-        <iframe class="embedded-osm-map" src="https://www.openstreetmap.org/export/embed.html?bbox=106.77535057067871%2C-6.661879532501472%2C106.85131072998048%2C-6.606633675940122&amp;layer=mapnik" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        
-        <div class="map-attribution-link">
-            <small><a href="https://www.openstreetmap.org/?#map=14/-6.63426/106.81333" target="_blank">Lihat Peta Lebih Besar</a></small>
-        </div>
+		schedules.forEach(schedule => {
+			let icon;
+			switch (schedule.trash_bin.status.toLowerCase()) {
+				case 'collected':
+					icon = iconGreen;
+					break;
+				default:
+					icon = iconGrey;
+			}
 
-        <div class="card-style">
-            <p>Peta ini menunjukkan area umum lokasi pengumpulan sampah di sekitar Bogor.</p>
-            <p>Untuk informasi lebih detail mengenai titik-titik sampah, harap hubungi administrator.</p>
-        </div>
-    </div>
+			const marker = L.marker([schedule.trash_bin.latitude, schedule.trash_bin.longitude], { icon: icon }).addTo(map);
+			marker.bindPopup(`
+					<strong>${schedule.trash_bin.resident.name} - ID #${schedule.trash_bin.id}</strong><br>
+					Alamat: ${schedule.trash_bin.resident.address}<br>
+					<a href="https://www.google.com/maps/dir/?api=1&destination=${schedule.trash_bin.latitude},${schedule.trash_bin.longitude}" 
+					target="_blank" class="text-blue-500 underline">
+						Lihat Arah di Google Maps
+					</a>
+				`);
+			bounds.extend([schedule.trash_bin.latitude, schedule.trash_bin.longitude]);
+		});
 
-</body>
-</html>
+		map.fitBounds(bounds, { padding: [30, 30] });
+	</script>
+@endsection

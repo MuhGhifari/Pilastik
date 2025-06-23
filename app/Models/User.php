@@ -29,14 +29,19 @@ class User extends Authenticatable
         'password',
         'role',
         'phone',
+        'date_of_birth',
     ];
 
     // public function getAuthIdentifierName() {
     //     return 'username';
     // }
 
-    public function schedules() {
-        return $this->hasMany(Schedule::class, 'user_id');
+    public function collector_schedules() {
+        return $this->hasMany(Schedule::class, 'collector_id');
+    }
+
+    public function resident_schedules() {
+        return $this->hasMany(Schedule::class, 'resident_id');
     }
 
     public function notifications() {
